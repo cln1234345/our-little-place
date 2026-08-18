@@ -1,26 +1,670 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --cream: #f5e9df;
+  --rose: #d7a99b;
+  --dusty-rose: #bd8578;
+  --sage: #899478;
+  --deep-sage: #65705b;
+  --earth: #76594d;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--cream);
+}
+
+
+/* ================================================= */
+/* SECRET GARDEN – BILD ALS HINTERGRUND              */
+/* ================================================= */
+
+.secret-garden-screen {
+  min-height: 100svh;
+
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.garden-overlay {
+  pointer-events: none;
+
+  background:
+    rgba(255, 246, 232, 0.08);
+}
+
+
+/* ================================================= */
+/* SCHRIFT                                           */
+/* ================================================= */
+
+.garden-title {
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-style: italic;
+
+  font-weight: 400;
+
+  letter-spacing: -0.03em;
+}
+
+
+/* ================================================= */
+/* VERSTECKTE OBJEKTE                                */
+/* ================================================= */
+
+.secret-object {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 58px;
+  height: 58px;
+
+  border: none;
+
+  border-radius: 999px;
+
+  background:
+    rgba(255, 249, 242, 0.15);
+
+  color: #6e765f;
+
+  font-size: 31px;
+
+  opacity: 0.7;
+
+  cursor: pointer;
+
+  backdrop-filter: blur(2px);
+
+  transition:
+    transform 250ms ease,
+    opacity 250ms ease,
+    background 250ms ease,
+    box-shadow 250ms ease;
+}
+
+.secret-object:hover {
+  opacity: 1;
+
+  transform:
+    scale(1.12);
+
+  background:
+    rgba(255, 249, 242, 0.35);
+
+  box-shadow:
+    0 8px 20px
+    rgba(75, 62, 49, 0.08);
+}
+
+.secret-object:active {
+  transform:
+    scale(0.9);
+}
+
+.secret-solved {
+  background:
+    rgba(255, 255, 255, 0.45);
+
+  color: #758166;
+
+  opacity: 0.85;
+}
+
+
+/* ================================================= */
+/* CODE-FORTSCHRITT                                  */
+/* ================================================= */
+
+.digit-slot {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 48px;
+
+  border-bottom:
+    1px solid
+    rgba(103, 86, 77, 0.35);
+
+  font-family:
+    Georgia,
+    serif;
+
+  font-size: 28px;
+
+  color:
+    rgba(103, 86, 77, 0.45);
+
+  transition:
+    all 500ms ease;
+}
+
+.digit-found {
+  color: #748064;
+
+  animation:
+    digitFound
+    700ms ease;
+}
+
+@keyframes digitFound {
+  0% {
+    opacity: 0;
+
+    transform:
+      translateY(10px)
+      scale(0.7);
+  }
+
+  60% {
+    transform:
+      translateY(-4px)
+      scale(1.15);
+  }
+
+  100% {
+    opacity: 1;
+
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}
+
+
+/* ================================================= */
+/* SPIELE                                            */
+/* ================================================= */
+
+.game-number {
+  font-size: 11px;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.25em;
+
+  color: #8c766a;
+}
+
+.game-modal {
+  animation:
+    modalIn
+    400ms
+    cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    );
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(25px)
+      scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}
+
+
+/* ================================================= */
+/* ZAHL WIRD AUFGEDECKT                              */
+/* ================================================= */
+
+.digit-reveal {
+  animation:
+    revealDigit
+    700ms ease;
+}
+
+@keyframes revealDigit {
+  from {
+    opacity: 0;
+
+    transform:
+      scale(0.8);
+
+    filter:
+      blur(8px);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      scale(1);
+
+    filter:
+      blur(0);
+  }
+}
+
+
+/* ================================================= */
+/* FINALER CODE                                      */
+/* ================================================= */
+
+.code-final {
+  font-family:
+    Georgia,
+    serif;
+
+  font-size:
+    clamp(
+      55px,
+      15vw,
+      100px
+    );
+
+  color: #718064;
+}
+
+.code-final span {
+  opacity: 0;
+
+  animation:
+    codeNumberIn
+    800ms ease
+    forwards;
+}
+
+@keyframes codeNumberIn {
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0);
+  }
+}
+
+.remember-code {
+  animation:
+    rememberIn
+    900ms ease;
+}
+
+@keyframes rememberIn {
+  from {
+    opacity: 0;
+
+    filter:
+      blur(8px);
+  }
+
+  to {
+    opacity: 1;
+
+    filter:
+      blur(0);
+  }
+}
+
+
+/* ================================================= */
+/* FALSCHER PIN                                      */
+/* ================================================= */
+
+.animate-shake {
+  animation:
+    shake
+    450ms ease;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform:
+      translateX(0);
+  }
+
+  25% {
+    transform:
+      translateX(-9px);
+  }
+
+  50% {
+    transform:
+      translateX(9px);
+  }
+
+  75% {
+    transform:
+      translateX(-5px);
+  }
+}
+
+
+/* ================================================= */
+/* BLÜTEN-MINIGAME                                   */
+/* ================================================= */
+
+.flower-button {
+  width: 78px;
+  height: 78px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 999px;
+
+  background:
+    rgba(255, 249, 244, 0.55);
+
+  border:
+    1px solid
+    rgba(194, 161, 146, 0.35);
+
+  box-shadow:
+    0 8px 25px
+    rgba(94, 70, 58, 0.08);
+
+  transition:
+    transform 400ms ease,
+    background 400ms ease,
+    box-shadow 400ms ease,
+    opacity 400ms ease;
+}
+
+.flower-symbol {
+  display: block;
+
+  font-size: 35px;
+
+  color: #a78273;
+
+  opacity: 0.45;
+
+  transform:
+    scale(0.75)
+    rotate(-8deg);
+
+  transition:
+    transform 500ms
+    cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    ),
+    color 400ms ease,
+    opacity 400ms ease;
+}
+
+.flower-awake {
+  background:
+    rgba(229, 203, 190, 0.9);
+
+  transform:
+    scale(1.12);
+
+  box-shadow:
+    0 0 0 8px
+    rgba(217, 181, 164, 0.12),
+    0 12px 35px
+    rgba(108, 89, 72, 0.15);
+}
+
+.flower-awake
+.flower-symbol {
+  color: #b87470;
+
+  opacity: 1;
+
+  transform:
+    scale(1.35)
+    rotate(5deg);
+}
+
+.flower-correct {
+  background:
+    rgba(208, 218, 196, 0.8);
+}
+
+.flower-correct
+.flower-symbol {
+  color: #748064;
+
+  opacity: 1;
+
+  transform:
+    scale(1.15);
+}
+
+.flower-wrong {
+  animation:
+    flowerWrong
+    450ms ease;
+}
+
+@keyframes flowerWrong {
+  0%,
+  100% {
+    transform:
+      translateX(0);
+  }
+
+  30% {
+    transform:
+      translateX(-6px);
+  }
+
+  60% {
+    transform:
+      translateX(6px);
+  }
+}
+
+.flower-success {
+  display:
+    inline-block;
+
+  color: #849174;
+
+  animation:
+    flowerBloom
+    900ms
+    cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    );
+}
+
+@keyframes flowerBloom {
+  from {
+    opacity: 0;
+
+    transform:
+      scale(0.3)
+      rotate(-25deg);
+  }
+
+  60% {
+    transform:
+      scale(1.25)
+      rotate(7deg);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      scale(1)
+      rotate(0);
+  }
+}
+
+
+/* ================================================= */
+/* FOTO NACH GELÖSTEM PUZZLE                         */
+/* ================================================= */
+
+.puzzle-picture-reveal {
+  width: 300px;
+
+  overflow: hidden;
+
+  border-radius: 22px;
+
+  box-shadow:
+    0 12px 35px
+    rgba(92, 68, 57, 0.16);
+
+  animation:
+    puzzlePictureReveal
+    1.1s
+    cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    )
+    both;
+}
+
+@keyframes puzzlePictureReveal {
+  0% {
+    opacity: 0;
+
+    transform:
+      scale(0.88)
+      rotate(-1deg);
+
+    filter:
+      blur(8px);
+  }
+
+  60% {
+    opacity: 1;
+
+    transform:
+      scale(1.025)
+      rotate(0deg);
+
+    filter:
+      blur(0);
+  }
+
+  100% {
+    opacity: 1;
+
+    transform:
+      scale(1)
+      rotate(0deg);
+
+    filter:
+      blur(0);
+  }
+}
+
+/* ================================================= */
+/* SECRET GARDEN – MITTIGER TITEL                    */
+/* ================================================= */
+
+.garden-center-content {
+  position: absolute;
+
+  left: 50%;
+  top: 45%;
+
+  transform: translate(-50%, -50%);
+
+  z-index: 20;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: min(90%, 760px);
+
+  text-align: center;
+}
+
+.garden-main-title {
+  margin: 0;
+
+  font-family:
+    var(--font-great-vibes),
+    cursive;
+
+  font-size: clamp(4rem, 7vw, 7rem);
+
+  font-weight: 400;
+
+  line-height: 0.9;
+
+  color: #74574c;
+
+  text-align: center;
+
+  text-shadow:
+    0 2px 15px
+    rgba(82, 62, 48, 0.08);
+}
+
+.garden-main-title span {
+  display: block;
+
+  margin-top: 14px;
+
+  font-size: 0.72em;
+}
+
+/* Handy */
+
+@media (max-width: 600px) {
+  .garden-center-content {
+    top: 42%;
+
+    width: 90%;
+  }
+
+  .garden-main-title {
+    font-size: clamp(
+      3.4rem,
+      14vw,
+      5rem
+    );
+
+    line-height: 0.92;
+  }
+
+  .garden-main-title span {
+    margin-top: 10px;
+  }
 }
