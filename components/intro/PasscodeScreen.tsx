@@ -14,13 +14,30 @@ export default function PasscodeScreen({
   onBack,
 }: Props) {
   const [code, setCode] = useState("");
-  const [wrongCode, setWrongCode] = useState(false);
 
-  /* ========================================= */
-  /* ZAHL EINGEBEN                            */
-  /* ========================================= */
+  const [wrongCode, setWrongCode] =
+    useState(false);
+
+  /*
+   * Wird true, sobald 2305 korrekt
+   * eingegeben wurde.
+   */
+  const [correctCode, setCorrectCode] =
+    useState(false);
+
+  /*
+   * ------------------------------------------------
+   * ZAHL EINGEBEN
+   * ------------------------------------------------
+   */
 
   function handleNumber(number: string) {
+    /*
+     * Während der Unlock-Animation
+     * keine weiteren Eingaben erlauben.
+     */
+    if (correctCode) return;
+
     if (code.length >= 4) return;
 
     const newCode = code + number;
@@ -33,18 +50,39 @@ export default function PasscodeScreen({
     }
   }
 
-  /* ========================================= */
-  /* CODE PRÜFEN                              */
-  /* ========================================= */
+  /*
+   * ------------------------------------------------
+   * CODE PRÜFEN
+   * ------------------------------------------------
+   */
 
-  function checkCode(enteredCode: string) {
-    if (enteredCode === CORRECT_CODE) {
+  function checkCode(
+    enteredCode: string,
+  ) {
+    /*
+     * RICHTIG
+     */
+
+    if (
+      enteredCode === CORRECT_CODE
+    ) {
+      setCorrectCode(true);
+
+      /*
+       * Erst dürfen die Punkte kurz hüpfen.
+       *
+       * Danach startet der Blütenvorhang.
+       */
       setTimeout(() => {
         onUnlocked();
-      }, 350);
+      }, 850);
 
       return;
     }
+
+    /*
+     * FALSCH
+     */
 
     setWrongCode(true);
 
@@ -54,17 +92,21 @@ export default function PasscodeScreen({
     }, 650);
   }
 
-  /* ========================================= */
-  /* LETZTE ZAHL LÖSCHEN                      */
-  /* ========================================= */
+  /*
+   * ------------------------------------------------
+   * LETZTE ZAHL LÖSCHEN
+   * ------------------------------------------------
+   */
 
   function handleDelete() {
+    if (correctCode) return;
+
     if (code.length === 0) return;
 
     setWrongCode(false);
 
     setCode((currentCode) =>
-      currentCode.slice(0, -1)
+      currentCode.slice(0, -1),
     );
   }
 
@@ -102,54 +144,56 @@ export default function PasscodeScreen({
       <div className="garden-overlay absolute inset-0" />
 
       {/* ========================================= */}
-      {/* ZURÜCK ZU DEN RÄTSELN                    */}
+      {/* ZURÜCK                                   */}
       {/* ========================================= */}
 
-      <button
-        onClick={onBack}
-        className="
-          absolute
-          left-6
-          top-6
-          z-30
+      {!correctCode && (
+        <button
+          onClick={onBack}
+          className="
+            absolute
+            left-6
+            top-6
+            z-30
 
-          flex
-          items-center
-          gap-2
+            flex
+            items-center
+            gap-2
 
-          rounded-full
+            rounded-full
 
-          border
-          border-[#8b7568]/15
+            border
+            border-[#8b7568]/15
 
-          bg-[#fffaf5]/35
+            bg-[#fffaf5]/35
 
-          px-4
-          py-2
+            px-4
+            py-2
 
-          text-sm
-          text-[#76594d]/75
+            text-sm
+            text-[#76594d]/75
 
-          backdrop-blur-sm
+            backdrop-blur-sm
 
-          transition-all
-          duration-300
+            transition-all
+            duration-300
 
-          hover:scale-[1.03]
-          hover:bg-[#fffaf5]/65
-          hover:text-[#76594d]
+            hover:scale-[1.03]
+            hover:bg-[#fffaf5]/65
+            hover:text-[#76594d]
 
-          active:scale-95
-        "
-      >
-        <span className="text-lg">
-          ←
-        </span>
+            active:scale-95
+          "
+        >
+          <span className="text-lg">
+            ←
+          </span>
 
-        <span>
-          Zu den Rätseln
-        </span>
-      </button>
+          <span>
+            Zu den Rätseln
+          </span>
+        </button>
+      )}
 
       {/* ========================================= */}
       {/* CODE-BILDSCHIRM                          */}
@@ -159,12 +203,15 @@ export default function PasscodeScreen({
         className="
           relative
           z-20
+
           flex
           min-h-screen
           flex-col
           items-center
           justify-center
+
           px-6
+
           text-center
         "
       >
@@ -173,7 +220,12 @@ export default function PasscodeScreen({
         {/* ======================================= */}
 
         <div className="mb-8">
-          <h1 className="garden-main-title text-[#74574c]">
+          <h1
+            className="
+              garden-main-title
+              text-[#74574c]
+            "
+          >
             Dein Code
           </h1>
 
@@ -199,6 +251,7 @@ export default function PasscodeScreen({
             mb-10
             flex
             gap-5
+
             ${
               wrongCode
                 ? "animate-shake"
@@ -206,30 +259,56 @@ export default function PasscodeScreen({
             }
           `}
         >
-          {[0, 1, 2, 3].map((index) => {
-            const filled =
-              index < code.length;
+          {[0, 1, 2, 3].map(
+            (index) => {
+              const filled =
+                index < code.length;
 
-            return (
-              <div
-                key={index}
-                className={`
-                  h-3
-                  w-3
-                  rounded-full
-                  border
-                  border-[#76594d]/50
-                  transition-all
-                  duration-200
-                  ${
-                    filled
-                      ? "scale-110 border-[#718064] bg-[#718064]"
-                      : "bg-[#fffaf5]/35"
+              return (
+                <div
+                  key={index}
+                  style={
+                    correctCode
+                      ? {
+                          animationDelay:
+                            `${index * 100}ms`,
+                        }
+                      : undefined
                   }
-                `}
-              />
-            );
-          })}
+                  className={`
+                    h-3
+                    w-3
+
+                    rounded-full
+
+                    border
+                    border-[#76594d]/50
+
+                    transition-all
+                    duration-200
+
+                    ${
+                      filled
+                        ? `
+                          scale-110
+                          border-[#718064]
+                          bg-[#718064]
+                        `
+                        : `
+                          bg-[#fffaf5]/35
+                        `
+                    }
+
+                    ${
+                      correctCode
+                        ? "unlock-dot"
+                        : ""
+                    }
+                  `}
+                />
+              );
+            },
+          )}
         </div>
 
         {/* ======================================= */}
@@ -255,12 +334,26 @@ export default function PasscodeScreen({
         {/* ======================================= */}
 
         <div
-          className="
+          className={`
             grid
             grid-cols-3
+
             gap-x-5
             gap-y-4
-          "
+
+            transition-all
+            duration-500
+
+            ${
+              correctCode
+                ? `
+                  pointer-events-none
+                  opacity-45
+                  scale-95
+                `
+                : ""
+            }
+          `}
         >
           {numbers.map((number) => (
             <PasscodeButton
@@ -273,7 +366,7 @@ export default function PasscodeScreen({
             </PasscodeButton>
           ))}
 
-          {/* LEERES FELD */}
+          {/* LEER */}
 
           <div className="h-[68px] w-[68px]" />
 
@@ -291,7 +384,10 @@ export default function PasscodeScreen({
 
           <button
             onClick={handleDelete}
-            disabled={code.length === 0}
+            disabled={
+              code.length === 0 ||
+              correctCode
+            }
             aria-label="Letzte Zahl löschen"
             className="
               flex
@@ -328,9 +424,11 @@ export default function PasscodeScreen({
   );
 }
 
-/* ============================================= */
-/* EINZELNE ZAHLENTASTE                          */
-/* ============================================= */
+/*
+ * =================================================
+ * ZAHLENTASTE
+ * =================================================
+ */
 
 function PasscodeButton({
   children,
